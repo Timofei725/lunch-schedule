@@ -1,39 +1,40 @@
-package ru.kiselev.lunchschedule.Model;
+package ru.kiselev.lunchschedule.model;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.domain.Persistable;
 import org.springframework.data.util.ProxyUtils;
-
 import ru.kiselev.lunchschedule.HasId;
+import org.springframework.util.Assert;
 
 @MappedSuperclass
+//  https://stackoverflow.com/a/6084701/548473
+@Access(AccessType.FIELD)
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class BaseEntity implements Persistable<Integer>, HasId {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Integer id;
 
+    // doesn't work for hibernate lazy proxy
     public int id() {
+        Assert.notNull(id, "Entity must have id");
         return id;
     }
 
-    @JsonIgnore
     @Override
     public boolean isNew() {
         return id == null;
     }
 
+    //    https://stackoverflow.com/questions/1638723
     @Override
     public boolean equals(Object o) {
         if (this == o) {

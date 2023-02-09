@@ -4,3 +4,4 @@ target
 *.iml
 logs
 *.patch
+application.yml

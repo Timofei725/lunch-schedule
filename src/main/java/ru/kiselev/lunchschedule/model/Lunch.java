@@ -1,4 +1,4 @@
-package ru.kiselev.lunchschedule.Model;
+package ru.kiselev.lunchschedule.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
@@ -7,16 +7,16 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Date;
 
 @Entity
 
-@Table(name = "lunch")
+@Table(name = "lunch",
+        indexes = @Index(name = "lunchIndex", columnList = "startTime,endTime,date", unique = true))
+//One unique lunch per day
 @Getter
 @Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor()
 @AllArgsConstructor
 public class Lunch extends BaseEntity {
     private LocalTime startTime;
@@ -28,4 +28,10 @@ public class Lunch extends BaseEntity {
     @JsonBackReference
     private User user;
 
+    public Lunch(Integer id, LocalTime startTime, LocalTime endTime, LocalDate date) {
+        super(id);
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.date = date;
+    }
 }
