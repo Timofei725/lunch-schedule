@@ -10,14 +10,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.kiselev.lunchschedule.model.Role;
 import ru.kiselev.lunchschedule.model.User;
+import ru.kiselev.lunchschedule.utill.ValidationUtil;
 
 import java.util.Collections;
 import java.util.List;
+
+import static ru.kiselev.lunchschedule.utill.ValidationUtil.assureIdConsistent;
 
 @RestController
 @RequestMapping(value = AdminUserController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
 @AllArgsConstructor
+@CrossOrigin("http://localhost:3000")
 public class AdminUserController extends AbstractUserController {
     static final String REST_URL = "/api/admin/users";
 
@@ -39,7 +43,8 @@ public class AdminUserController extends AbstractUserController {
     public User create(@RequestBody @Valid User user) {
         user.setRoles(Collections.singleton(Role.USER));
         log.info("creat user {}", user);
-        return super.save(user);
+        ValidationUtil.checkNew(user);
+        return super.save(user).orElseThrow();
     }
 
     @DeleteMapping("/{id}")
@@ -52,8 +57,8 @@ public class AdminUserController extends AbstractUserController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@RequestBody @Valid User user, @PathVariable int id) {
         log.info("update user {}, id {}", user, id);
-
-        super.save(user);
+        assureIdConsistent(user, id);
+        super.save(user).orElseThrow();
     }
 
 

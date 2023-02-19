@@ -1,11 +1,9 @@
 package ru.kiselev.lunchschedule.web.user;
 
 import lombok.Getter;
-import lombok.ToString;
 import org.springframework.lang.NonNull;
 import ru.kiselev.lunchschedule.model.User;
 
-import java.util.Collections;
 
 public class AuthUser extends org.springframework.security.core.userdetails.User {
 
@@ -17,6 +15,7 @@ public class AuthUser extends org.springframework.security.core.userdetails.User
         this.user = user;
     }
 
+
     public int id() {
         return user.id();
     }
@@ -26,3 +25,4 @@ public class AuthUser extends org.springframework.security.core.userdetails.User
         return "AuthUser:" + user.getId() + '[' + user.getEmail() + ']';
     }
 }
+

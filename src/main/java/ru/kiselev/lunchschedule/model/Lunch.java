@@ -25,7 +25,6 @@ public class Lunch extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_id")
-    @JsonBackReference
     private User user;
 
     public Lunch(Integer id, LocalTime startTime, LocalTime endTime, LocalDate date) {
@@ -33,5 +32,13 @@ public class Lunch extends BaseEntity {
         this.startTime = startTime;
         this.endTime = endTime;
         this.date = date;
+    }
+
+    public Lunch(Integer id, LocalTime startTime, LocalTime endTime, LocalDate date, User user) {
+        super(id);
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.date = date;
+        this.user = user;
     }
 }

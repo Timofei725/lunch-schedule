@@ -19,6 +19,8 @@ import java.util.List;
 @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
 @AllArgsConstructor
+@CrossOrigin("http://localhost:3000")
+
 public class LunchController {
 
     private LunchService lunchService;
@@ -37,10 +39,12 @@ public class LunchController {
 
     @PutMapping("/api/lunches/{lunchId}")
     public Lunch setLunchOwner(@RequestBody @Valid Lunch lunch, @PathVariable int lunchId,
-                               @RequestParam boolean isWorkDayLong, @AuthenticationPrincipal AuthUser authUser) {
-        log.info("set lunch owner for lunch {}, user {}", lunchId, authUser.getUser().getId());
-        return lunchService.setLunchOwner(lunch, authUser.getUser().id(), lunchId, isWorkDayLong);
+                               @AuthenticationPrincipal User user) {
+        log.info("set lunch owner for lunch {}, user {}", lunchId, user);
+        return lunchService.setLunchOwner(lunch, user.getId());
     }
+
+
 
 
 }

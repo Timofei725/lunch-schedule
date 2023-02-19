@@ -6,6 +6,8 @@ import org.springframework.http.ResponseEntity;
 import ru.kiselev.lunchschedule.model.User;
 import ru.kiselev.lunchschedule.repository.UserRepository;
 
+import java.util.Optional;
+
 @Slf4j
 public class AbstractUserController {
     @Autowired
@@ -18,9 +20,10 @@ public class AbstractUserController {
 
     public void delete(int id) {
         log.info("delete {}", id);
+        repository.deleteById(id);
     }
 
-    protected User save(User user) {
-        return repository.save(user);
+    protected Optional<User> save(User user) {
+        return Optional.of(repository.save(user));
     }
 }

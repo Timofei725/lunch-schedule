@@ -1,6 +1,6 @@
 package ru.kiselev.lunchschedule.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.kiselev.lunchschedule.model.Lunch;
 import ru.kiselev.lunchschedule.repository.LunchRepository;
@@ -10,22 +10,19 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class LunchService {
     private final LunchRepository lunchRepository;
     private final UserRepository userRepository;
-
-    @Autowired
-    public LunchService(LunchRepository lunchRepository, UserRepository userRepository) {
-        this.lunchRepository = lunchRepository;
-        this.userRepository = userRepository;
-    }
 
 
     public List<Lunch> getAll() {
         return lunchRepository.findAll();
     }
+
 
     public List<Lunch> getTodayLunches() {
         return lunchRepository.getByDate(LocalDate.now());
@@ -51,7 +48,11 @@ public class LunchService {
     }
 
 
-    public Lunch save(Lunch lunch) {
+    public Lunch update(Lunch lunch, Integer newOwnerId) {
+        Optional<Integer> checkNewUser = Optional.ofNullable(newOwnerId);
+        if (checkNewUser.isPresent()) {
+            return setLunchOwner(lunch, newOwnerId);
+        }
         return lunchRepository.save(lunch);
     }
 
@@ -67,9 +68,9 @@ public class LunchService {
         return lunchRepository.getByUserIdAndDate(id, LocalDate.now());
     }
 
-    public Lunch setLunchOwner(Lunch lunch, int userId, int lunchId, boolean isWorkDayLong) {
+    public Lunch setLunchOwner(Lunch lunch, Integer userId) {
         List<Lunch> thisUserLunches = getTodayLunchesByUserId(userId);
-        if (isWorkDayLong) {
+        if (userRepository.findById(userId).get().getWorkingHours() > 10) {
             if (thisUserLunches.size() <= 1) { // if person able to have 2 lunches
                 lunch.setUser(userRepository.getReferenceById(userId));
                 return lunchRepository.save(lunch);
@@ -79,6 +80,18 @@ public class LunchService {
             return lunchRepository.save(lunch);
         }
         return lunch;
+    }
+
+    public List<Lunch> findAllWithUsers() {
+        return lunchRepository.findAllWithUsers();
+    }
+
+    public Optional<Lunch> getBy(int id) {
+        return lunchRepository.findWithUser(id);
+    }
+
+    public void delete(int id) {
+        lunchRepository.deleteById(id);
     }
 }
 

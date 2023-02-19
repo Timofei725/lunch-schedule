@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.kiselev.lunchschedule.model.User;
 import ru.kiselev.lunchschedule.repository.UserRepository;
 
+import static ru.kiselev.lunchschedule.utill.ValidationUtil.checkNew;
+
 
 @RestController
 @RequestMapping(value = ProfileController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -35,8 +37,8 @@ public class ProfileController extends AbstractUserController {
     @ResponseStatus(HttpStatus.CREATED)
     public User register(@Valid @RequestBody User user) {
         log.info("register {}", user);
-
-        return super.save(user);
+        checkNew(user);
+        return super.save(user).orElseThrow();
     }
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -49,3 +51,4 @@ public class ProfileController extends AbstractUserController {
     }
 
 }
+
