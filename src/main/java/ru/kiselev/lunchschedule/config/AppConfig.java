@@ -6,8 +6,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate5.jakarta.Hibernate5JakartaModule;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.ProblemDetail;
@@ -15,7 +15,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -33,6 +32,7 @@ import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.NONE;
 @Configuration
 @Slf4j
 @RequiredArgsConstructor
+@EnableCaching
 public class AppConfig {
     private final UserRepository repository;
 
@@ -44,7 +44,7 @@ public class AppConfig {
         JsonUtil.setMapper(objectMapper);
     }
 
-    //    https://stackoverflow.com/a/74630129/548473
+    // https://stackoverflow.com/a/74630129/548473
     @JsonAutoDetect(fieldVisibility = NONE, getterVisibility = ANY)
     interface MixIn {
         @JsonAnyGetter
@@ -53,7 +53,8 @@ public class AppConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return username -> new AuthUser(repository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("User not found")));
+        return username -> new AuthUser(repository.findByEmail(username).orElseThrow(() ->
+                new UsernameNotFoundException("User not found")));
     }
 
     @Bean

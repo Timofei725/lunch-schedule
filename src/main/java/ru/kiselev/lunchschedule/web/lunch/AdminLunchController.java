@@ -4,69 +4,80 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.kiselev.lunchschedule.model.Lunch;
 import ru.kiselev.lunchschedule.model.User;
 import ru.kiselev.lunchschedule.service.LunchService;
+import ru.kiselev.lunchschedule.to.CreateLunchesRequest;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
-@RequestMapping(value = AdminLunchController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/admin/lunches")
 @Slf4j
 @AllArgsConstructor
-@CrossOrigin("http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:3000")
 public class AdminLunchController {
-    static final String REST_URL = "/api/admin/lunches";
-    private LunchService lunchService;
+
+    private final LunchService lunchService;
 
     @GetMapping
-    public List<Lunch> getAll() {
-        log.info("getALl");//now its only for today
-        return lunchService.findAllWithUsers();
+    public ResponseEntity<List<Lunch>> getAllLunches() {
+        log.info("Getting all lunches");
+        List<Lunch> lunches = lunchService.getAll();
+        return ResponseEntity.ok(lunches);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Lunch> get(@PathVariable int id) {
-        return ResponseEntity.of(lunchService.getBy(id));
-
+    public ResponseEntity<Lunch> getLunchById(@PathVariable int id) {
+        log.info("Getting lunch with id {}", id);
+        Optional<Lunch> optionalLunch = lunchService.getById(id);
+        if (optionalLunch.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        Lunch lunch = optionalLunch.get();
+        return ResponseEntity.ok(lunch);
     }
 
+    @PostMapping()
+    @CacheEvict(value = "lunches", allEntries = true)
+    public List<Lunch> createLunchesByTime(@Valid @RequestBody CreateLunchesRequest request) {
+        log.info("create lunches since {} to {}", request.getStartTime(), request.getEndTime());
+        return lunchService.createLunchesByTime(request.getStartTime(), request.getEndTime());
+    }
+
+    @PutMapping("/{id}")
+    @CacheEvict(value = "lunches", allEntries = true)
+    public ResponseEntity<Lunch> updateLunch(@PathVariable int id, @RequestBody @Valid Lunch lunch) {
+        log.info("Updating lunch with id {}: {}", id, lunch);
+        Lunch updatedLunch = lunchService.update(lunch,id);
+        return ResponseEntity.ok(updatedLunch);
+    }
+    @CacheEvict(value = "lunches", allEntries = true)
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable int id) {
+    public ResponseEntity<Void> deleteLunch(@PathVariable int id) {
+        log.info("Deleting lunch with id {}", id);
+        Optional<Lunch> optionalLunch = lunchService.getById(id);
+        if (optionalLunch.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
         lunchService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/filter")
-    public List<Lunch> getFiltered(@RequestParam(required = false) @DateTimeFormat(pattern = "HH:mm") LocalTime startTime,
-                                   @RequestParam(required = false) @DateTimeFormat(pattern = "HH:mm") LocalTime endTime,
-                                   @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") @NotNull LocalDate date) {
-        log.info("get lunches for date {}, since {} to {}", date, startTime, endTime);
-        return lunchService.getByDateTime(startTime, endTime, date);
+    public ResponseEntity<List<Lunch>> getLunchesByDateTime(
+            @RequestParam(required = false) @DateTimeFormat(pattern = "HH:mm") LocalTime startTime,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "HH:mm") LocalTime endTime,
+            @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") @NotNull LocalDate date) {
+        log.info("Getting lunches for date {}, since {} to {}", date, startTime, endTime);
+        List<Lunch> lunches = lunchService.getByDateTimeWithUsers(startTime, endTime, date);
+        return ResponseEntity.ok(lunches);
     }
-
-
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public List<Lunch> createLunchesByTime(@RequestParam @DateTimeFormat(pattern = "HH:mm") @NotNull LocalTime startTime,
-                                           @RequestParam @DateTimeFormat(pattern = "HH:mm") @NotNull LocalTime endTime) {
-        log.info("create lunches since {} to {}", startTime, endTime);
-        return lunchService.createLunchesByTime(startTime, endTime);
-    }
-
-    @PutMapping(value = "/{lunchId}/{newOwnerId}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@RequestBody @Valid Lunch lunch, @PathVariable(required = false) int newOwnerId) {
-        log.info("update {} with id={}", lunch, lunch);
-        lunchService.update(lunch, newOwnerId);
-    }
-
 }
-
-

@@ -1,4 +1,5 @@
 package ru.kiselev.lunchschedule.web;
+
 import lombok.NoArgsConstructor;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.function.BiConsumer;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
 @NoArgsConstructor()
 public class MatcherFactory {
 

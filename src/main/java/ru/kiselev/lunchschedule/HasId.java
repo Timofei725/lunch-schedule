@@ -2,8 +2,7 @@ package ru.kiselev.lunchschedule;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.util.Assert;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.springframework.util.Assert;
+
 
 public interface HasId {
     Integer getId();

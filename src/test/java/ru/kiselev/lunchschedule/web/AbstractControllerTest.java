@@ -1,25 +1,25 @@
 package ru.kiselev.lunchschedule.web;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.jdbc.SqlGroup;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import ru.kiselev.lunchschedule.model.User;
+import ru.kiselev.lunchschedule.to.AuthenticationRequest;
+import ru.kiselev.lunchschedule.utill.JsonUtil;
 
-import javax.sql.DataSource;
 
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
-import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 
 @SpringBootTest()
 @Transactional
@@ -34,4 +34,18 @@ public abstract class AbstractControllerTest {
     protected ResultActions perform(MockHttpServletRequestBuilder builder) throws Exception {
         return mockMvc.perform(builder);
     }
+
+    public String getAuthTokenForUser(User thisUser) throws Exception {
+        AuthenticationRequest authRequest = new AuthenticationRequest(thisUser.getEmail(), thisUser.getPassword());
+        MvcResult result = perform(MockMvcRequestBuilders.post("/api/auth/authenticate")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(authRequest)))
+                .andReturn();
+        String response = result.getResponse().getContentAsString();
+        JSONObject jsonObject = new JSONObject(response);
+
+        return jsonObject.getString("token");
+    }
+
+
 }

@@ -3,10 +3,7 @@ package ru.kiselev.lunchschedule.web;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.kiselev.lunchschedule.service.AuthenticationService;
 import ru.kiselev.lunchschedule.to.AuthenticationRequest;
 import ru.kiselev.lunchschedule.to.AuthenticationResponse;
@@ -15,6 +12,7 @@ import ru.kiselev.lunchschedule.to.RegisterRequest;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:3000")
 public class AuthenticationController {
 
     private final AuthenticationService service;
@@ -34,4 +32,10 @@ public class AuthenticationController {
     }
 
 
+    public static void main(String[] args) {
+        char[] efe= {'w','d'};
+        String string = new String(efe);
+        System.out.println(string);
+
+    }
 }

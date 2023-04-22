@@ -7,7 +7,6 @@ import ru.kiselev.lunchschedule.model.User;
 
 import java.util.Optional;
 
-@Transactional(readOnly = true)
 public interface UserRepository extends BaseRepository<User> {
 
     @Query("SELECT u FROM User u WHERE u.email = LOWER(:email)")

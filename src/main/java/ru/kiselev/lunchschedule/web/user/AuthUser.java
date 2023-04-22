@@ -25,4 +25,3 @@ public class AuthUser extends org.springframework.security.core.userdetails.User
         return "AuthUser:" + user.getId() + '[' + user.getEmail() + ']';
     }
 }
-

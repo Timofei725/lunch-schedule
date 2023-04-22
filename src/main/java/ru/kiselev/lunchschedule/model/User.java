@@ -5,10 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -40,9 +37,8 @@ public class User extends BaseEntity implements UserDetails {
     @NotBlank
     @Size(max = 100)
     private String email;
-
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(name = "password", nullable = false)
-    @NotBlank
     @Size(min = 5, max = 100)
     private String password;
     @Column(name = "registered", nullable = false, columnDefinition = "timestamp default now()", updatable = false)
@@ -51,7 +47,8 @@ public class User extends BaseEntity implements UserDetails {
     private LocalDateTime registered = LocalDateTime.now();
 
     @Enumerated(EnumType.STRING)
-    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "role"}, name = "uk_user_roles"))
+    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"),
+            uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "role"}, name = "uk_user_roles"))
     @Column(name = "role")
     @ElementCollection(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id") //https://stackoverflow.com/a/62848296/548473
@@ -75,6 +72,14 @@ public class User extends BaseEntity implements UserDetails {
         this.roles = roles;
     }
 
+    public User(Integer id, String name, String email, String password, Set<Role> roles, int workingHours) {
+        super(id);
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.roles = roles;
+        this.workingHours = workingHours;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

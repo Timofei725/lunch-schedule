@@ -5,7 +5,6 @@ import ru.kiselev.lunchschedule.model.User;
 import ru.kiselev.lunchschedule.utill.JsonUtil;
 import ru.kiselev.lunchschedule.web.MatcherFactory;
 
-import java.time.LocalDateTime;
 import java.util.Collections;
 
 public class UserTestData {
@@ -31,9 +30,9 @@ public class UserTestData {
     }
 
     public static User getUpdated() {
-        User user = new User(FIRST_USER_ID, "UpdatedName", FIRST_USER_MAIL, "newPass", Collections.singleton(Role.USER),14);
-        user.setRegistered(LocalDateTime.now());
-        return user;
+        User UpdatedUser = new User(FIRST_USER_ID, "UpdatedName", FIRST_USER_MAIL, "newPass", Collections.singleton(Role.USER),14);
+        UpdatedUser.setId(user.getId());
+        return UpdatedUser;
     }
 
 

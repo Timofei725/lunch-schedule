@@ -15,7 +15,6 @@ import ru.kiselev.lunchschedule.utill.ValidationUtil;
 import java.util.Collections;
 import java.util.List;
 
-import static ru.kiselev.lunchschedule.utill.ValidationUtil.assureIdConsistent;
 
 @RestController
 @RequestMapping(value = AdminUserController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -57,7 +56,6 @@ public class AdminUserController extends AbstractUserController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@RequestBody @Valid User user, @PathVariable int id) {
         log.info("update user {}, id {}", user, id);
-        assureIdConsistent(user, id);
         super.save(user).orElseThrow();
     }
 

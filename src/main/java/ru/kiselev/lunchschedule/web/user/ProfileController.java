@@ -14,10 +14,11 @@ import ru.kiselev.lunchschedule.repository.UserRepository;
 import static ru.kiselev.lunchschedule.utill.ValidationUtil.checkNew;
 
 
-@RestController
 @RequestMapping(value = ProfileController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
+@RestController
 @AllArgsConstructor
+@CrossOrigin(origins = "http://localhost:3000")
 public class ProfileController extends AbstractUserController {
     static final String REST_URL = "/api/profile";
     private final UserRepository userRepository;
@@ -45,8 +46,7 @@ public class ProfileController extends AbstractUserController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Transactional
     public void update(@RequestBody @Valid User user, @AuthenticationPrincipal AuthUser authUser) {
-        log.info("update user {}", user);
-
+        log.info("update user {}", authUser.getUser());
         save(user);
     }
 

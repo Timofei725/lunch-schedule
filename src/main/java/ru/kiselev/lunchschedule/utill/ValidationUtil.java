@@ -1,10 +1,6 @@
 package ru.kiselev.lunchschedule.utill;
 
 import lombok.experimental.UtilityClass;
-import org.springframework.core.NestedExceptionUtils;
-import org.springframework.lang.NonNull;
-
-import java.util.Optional;
 
 import ru.kiselev.lunchschedule.HasId;
 import ru.kiselev.lunchschedule.error.IllegalRequestDataException;
@@ -18,7 +14,6 @@ public class ValidationUtil {
         }
     }
 
-    //  Conservative when you reply, but accept liberally (http://stackoverflow.com/a/32728226/548473)
     public static void assureIdConsistent(HasId bean, int id) {
         if (bean.isNew()) {
             bean.setId(id);
@@ -27,18 +22,7 @@ public class ValidationUtil {
         }
     }
 
-    public static void checkModification(int count, int id) {
-        if (count == 0) {
-            throw new IllegalRequestDataException("Entity with id=" + id + " not found");
-        }
-    }
 
-    //  https://stackoverflow.com/a/65442410/548473
-    @NonNull
-    public static Throwable getRootCause(@NonNull Throwable t) {
-        Throwable rootCause = NestedExceptionUtils.getRootCause(t);
-        return rootCause != null ? rootCause : t;
-    }
 
 
 }
