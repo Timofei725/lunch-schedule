@@ -1,1 +1,1 @@
-I am creating an app for plan and control lunch times 
+This is the backend part of my full stack app. This app using for workers lunch schedule. Admin able to create time for lunch and redact it, workers are able to take a lunch in this times. Lunches number for workers depends of their working hours.
