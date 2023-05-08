@@ -8,10 +8,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import ru.kiselev.lunchschedule.model.User;
 import ru.kiselev.lunchschedule.repository.UserRepository;
 
-import java.util.Objects;
 import java.util.Optional;
 
-import static ru.kiselev.lunchschedule.utill.ValidationUtil.assureIdConsistent;
 
 @Slf4j
 public class AbstractUserController {

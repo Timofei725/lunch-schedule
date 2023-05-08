@@ -9,7 +9,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.kiselev.lunchschedule.model.Lunch;
-import ru.kiselev.lunchschedule.model.User;
 import ru.kiselev.lunchschedule.service.LunchService;
 import ru.kiselev.lunchschedule.to.CreateLunchesRequest;
 
@@ -56,9 +55,10 @@ public class AdminLunchController {
     @CacheEvict(value = "lunches", allEntries = true)
     public ResponseEntity<Lunch> updateLunch(@PathVariable int id, @RequestBody @Valid Lunch lunch) {
         log.info("Updating lunch with id {}: {}", id, lunch);
-        Lunch updatedLunch = lunchService.update(lunch,id);
+        Lunch updatedLunch = lunchService.update(lunch, id);
         return ResponseEntity.ok(updatedLunch);
     }
+
     @CacheEvict(value = "lunches", allEntries = true)
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteLunch(@PathVariable int id) {

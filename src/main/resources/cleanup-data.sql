@@ -1,13 +1,5 @@
-DELETE from user_roles where user_id=1;
-DELETE from user_roles where user_id=2;
-DELETE from user_roles where user_id=3;
-
-DELETE from lunch where user_id=1;
-DELETE from lunch where user_id=2;
-DELETE from lunch where user_id=3;
-
-DELETE from users where id=1;
-DELETE from users where id=2;
-DELETE from users where id=3;
+DELETE FROM user_roles WHERE user_id IN (1, 2, 3);
+DELETE FROM lunch WHERE user_id IN (1, 2, 3);
+DELETE FROM users WHERE id IN (1, 2, 3);
 
 

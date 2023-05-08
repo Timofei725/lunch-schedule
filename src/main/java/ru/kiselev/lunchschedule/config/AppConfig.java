@@ -1,7 +1,6 @@
 package ru.kiselev.lunchschedule.config;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate5.jakarta.Hibernate5JakartaModule;
 import lombok.RequiredArgsConstructor;
@@ -23,33 +22,22 @@ import ru.kiselev.lunchschedule.repository.UserRepository;
 import ru.kiselev.lunchschedule.utill.JsonUtil;
 import ru.kiselev.lunchschedule.web.user.AuthUser;
 
-import java.util.Map;
 
-import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
-import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.NONE;
 
 
 @Configuration
-@Slf4j
-@RequiredArgsConstructor
 @EnableCaching
+@RequiredArgsConstructor
+@Slf4j
 public class AppConfig {
     private final UserRepository repository;
 
     @Autowired
     void configureAndStoreObjectMapper(ObjectMapper objectMapper) {
         objectMapper.registerModule(new Hibernate5JakartaModule());
-        // https://stackoverflow.com/questions/7421474/548473
-        objectMapper.addMixIn(ProblemDetail.class, MixIn.class);
         JsonUtil.setMapper(objectMapper);
     }
 
-    // https://stackoverflow.com/a/74630129/548473
-    @JsonAutoDetect(fieldVisibility = NONE, getterVisibility = ANY)
-    interface MixIn {
-        @JsonAnyGetter
-        Map<String, Object> getProperties();
-    }
 
     @Bean
     public UserDetailsService userDetailsService() {

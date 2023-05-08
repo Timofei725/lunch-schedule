@@ -1,9 +1,8 @@
 package ru.kiselev.lunchschedule.web.lunch;
 
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
@@ -19,10 +18,9 @@ import java.util.List;
 @RestController
 @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
-@AllArgsConstructor
 @CrossOrigin(origins = "http://localhost:3000")
 public class LunchController {
-
+    @Autowired
     private LunchService lunchService;
 
     @Cacheable(value = "lunches")

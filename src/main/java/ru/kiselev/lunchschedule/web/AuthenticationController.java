@@ -31,11 +31,4 @@ public class AuthenticationController {
         return ResponseEntity.ok(service.authenticate(request));
     }
 
-
-    public static void main(String[] args) {
-        char[] efe= {'w','d'};
-        String string = new String(efe);
-        System.out.println(string);
-
-    }
 }

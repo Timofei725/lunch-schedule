@@ -75,10 +75,10 @@ public class LunchService {
 
     public List<Lunch> getByDateTimeWithUsers(LocalTime startTime, LocalTime endTime, LocalDate date) {
         if (startTime == null) {
-            startTime = LocalTime.of(8, 00);
+            startTime = LocalTime.of(0, 1);
         }
         if (endTime == null) {
-            endTime = LocalTime.of(23, 00);
+            endTime = LocalTime.of(23, 59);
         }
         return lunchRepository.getByDateTimeWithUsers(startTime, endTime, date);
     }
@@ -88,11 +88,10 @@ public class LunchService {
         LocalDate today = LocalDate.now();
         List<Lunch> thisUserLunches = lunchRepository.getByUserIdAndDate(userId, today);
 
-        if (user.getWorkingHours() >= 6 && thisUserLunches.isEmpty()) {
+        if (user.getWorkingHours() >= 5 && thisUserLunches.isEmpty()) {
             lunch.setUser(user);
             return lunchRepository.save(lunch);
-        } else if (user.getWorkingHours() > 12 && thisUserLunches.size() < 2) {
-
+        } else if (user.getWorkingHours() > 8 && thisUserLunches.size() < 2) {
             lunch.setUser(user);
             return lunchRepository.save(lunch);
         }

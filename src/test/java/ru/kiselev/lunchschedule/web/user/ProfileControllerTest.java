@@ -4,7 +4,6 @@ package ru.kiselev.lunchschedule.web.user;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.kiselev.lunchschedule.model.User;
@@ -54,7 +53,6 @@ class ProfileControllerTest extends AbstractControllerTest {
 
 
     @Test
-    @WithUserDetails(value = FIRST_USER_MAIL)
     void updateInvalid() throws Exception {
         User updatedTo = new User(null, null, "password", null, null, 0);
         perform(MockMvcRequestBuilders
